@@ -1,16 +1,16 @@
 package main
 
 import (
-	"fmt"
-	"strings"
+	"time"
+
+	"github.com/2bitburrito/pokedex-cli/internal/pokeapi"
+	"github.com/2bitburrito/pokedex-cli/internal/types"
 )
 
-func cleanInput(text string) []string {
-	lowerWords := strings.ToLower(text)
-	words := strings.Fields(lowerWords)
-	return words
-}
-
 func main() {
-	fmt.Println("Hello, World!")
+	newClient := pokeapi.NewClient(5 * time.Second)
+	cfg := types.Config{
+		PokeClient: newClient,
+	}
+	startRepl(&cfg)
 }
