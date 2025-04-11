@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	"github.com/2bitburrito/pokedex-cli/internal/commands"
-	"github.com/2bitburrito/pokedex-cli/internal/types"
+	"github.com/2bitburrito/pokedex-cli/internal/pokeapi"
 )
 
 func cleanInput(text string) []string {
@@ -19,7 +19,7 @@ func cleanInput(text string) []string {
 	return words
 }
 
-func startRepl(cfg *types.Config) {
+func startRepl(cfg *pokeapi.Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")

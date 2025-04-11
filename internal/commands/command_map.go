@@ -1,70 +1,35 @@
 package commands
 
 import (
-	"encoding/json"
 	"fmt"
-	"io"
-	"net/http"
-	"os"
 
-	"github.com/2bitburrito/pokedex-cli/internal/types"
+	"github.com/2bitburrito/pokedex-cli/internal/pokeapi"
 )
 
-type Locations struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
-
-var locationPage Locations
-var initLocationUrl string = "http://pokeapi.co/api/v2/location-area"
-
-func CommandMap(cfg *types.Config) error {
-	if locationPage.Next == "" {
-		locationPage.Next = initLocationUrl
-	}
-	res, err := http.Get(locationPage.Next)
-	if err != nil {
-		fmt.Print(err.Error())
-		os.Exit(1)
-	}
-
-	responseData, err := io.ReadAll(res.Body)
+func CommandMap(cfg *pokeapi.Config) error {
+	locations, err := cfg.PokeClient.GetLocations(cfg.LocationsNext)
 	if err != nil {
 		return err
 	}
-
-	if err = json.Unmarshal(responseData, &locationPage); err != nil {
-		return err
-	}
-	// fmt.Println(locationPage.Results)
-	for _, location := range locationPage.Results {
+	for _, location := range locations.Results {
 		fmt.Println(location.Name)
 	}
+	cfg.LocationsNext = &locations.Next
+	cfg.LocationsPrev = &locations.Previous
+
 	return nil
 }
 
-func CommandMapBack(cfg *types.Config) error {
-	if locationPage.Previous == "" {
-		fmt.Println("mapb called before map")
-	}
-	res, err := http.Get(locationPage.Previous)
+func CommandMapBack(cfg *pokeapi.Config) error {
+	locations, err := cfg.PokeClient.GetLocations(cfg.LocationsPrev)
 	if err != nil {
 		return err
 	}
-	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return err
+	for _, location := range locations.Results {
+		fmt.Println(location.Name)
 	}
-	if err = json.Unmarshal(data, &locationPage); err != nil {
-		return err
-	}
-	for _, result := range locationPage.Results {
-		fmt.Println(result.Name)
-	}
+	cfg.LocationsNext = &locations.Next
+	cfg.LocationsPrev = &locations.Previous
+
 	return nil
 }

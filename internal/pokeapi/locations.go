@@ -2,13 +2,10 @@ package pokeapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
-	"net/http"
 )
 
-type PokeAPIClient struct {
-	HttpClient http.Client
-}
 type LocationsResponse struct {
 	Count    int    `json:"count"`
 	Next     string `json:"next"`
@@ -19,11 +16,12 @@ type LocationsResponse struct {
 	} `json:"results"`
 }
 
-func (c *PokeAPIClient) GetLocations(url *string) (LocationsResponse, error) {
+func (c *Client) GetLocations(url *string) (LocationsResponse, error) {
 	path := baseUrl + "/location-area"
 	if url != nil {
 		path = *url
 	}
+	fmt.Println(path)
 	res, err := c.HttpClient.Get(path)
 	if err != nil {
 		return LocationsResponse{}, err

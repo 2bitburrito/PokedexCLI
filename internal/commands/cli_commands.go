@@ -1,11 +1,11 @@
 package commands
 
-import "github.com/2bitburrito/pokedex-cli/internal/types"
+import "github.com/2bitburrito/pokedex-cli/internal/pokeapi"
 
 type cliCommand struct {
 	Name        string
 	Description string
-	Callback    func(*types.Config) error
+	Callback    func(*pokeapi.Config) error
 }
 
 var CliCommands map[string]cliCommand

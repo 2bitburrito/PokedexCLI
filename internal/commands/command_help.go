@@ -3,10 +3,10 @@ package commands
 import (
 	"fmt"
 
-	"github.com/2bitburrito/pokedex-cli/internal/types"
+	"github.com/2bitburrito/pokedex-cli/internal/pokeapi"
 )
 
-func CommandHelp(*types.Config) error {
+func CommandHelp(*pokeapi.Config) error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println()
 	fmt.Println("Usage:")
