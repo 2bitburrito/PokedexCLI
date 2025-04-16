@@ -26,18 +26,33 @@ func startRepl(cfg *pokeapi.Config) {
 		scanner.Scan()
 		input := scanner.Text()
 
-		cleanedInput := cleanInput(input)
-		if len(cleanedInput) < 1 || cleanedInput[0] == "" {
+		cleanedInputs := cleanInput(input)
+		if len(cleanedInputs) < 1 || cleanedInputs[0] == "" {
 			continue
 		}
 
-		command, exists := commands.GetCommands()[cleanedInput[0]]
+		command, exists := commands.GetCommands()[cleanedInputs[0]]
+		switch command.Name {
+		case "explore":
+			if len(cleanedInputs) < 2 {
+				fmt.Println("Requre a valid location argument")
+			} else {
+				cfg.ExploredLocation = &cleanedInputs[1]
+			}
+		case "catch":
+			if len(cleanedInputs) < 2 {
+				fmt.Println("Requre a valid location argument")
+			} else {
+				cfg.CatchingPokemon = &cleanedInputs[1]
+			}
+		}
+
 		if !exists {
 			fmt.Println("Unknown command: try 'help'")
-		} else {
-			if err := command.Callback(cfg); err != nil {
-				fmt.Println(err)
-			}
+			continue
+		}
+		if err := command.Callback(cfg); err != nil {
+			fmt.Println(err)
 		}
 
 	}

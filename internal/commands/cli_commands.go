@@ -32,5 +32,15 @@ func GetCommands() map[string]cliCommand {
 			Description: "Displays the previous page of the map list",
 			Callback:    CommandMapBack,
 		},
+		"explore": {
+			Name:        "explore",
+			Description: "Explore an area - takes one location argument",
+			Callback:    CommandExplore,
+		},
+		"catch": {
+			Name:        "catch",
+			Description: "Try your luck and see if you can catch a pokemon",
+			Callback:    CommandCatch,
+		},
 	}
 }

@@ -2,35 +2,32 @@ package pokeapi
 
 import (
 	"encoding/json"
-	"fmt"
 	"io"
+	"net/http"
 )
 
-type LocationsResponse struct {
-	Count    int    `json:"count"`
-	Next     string `json:"next"`
-	Previous string `json:"previous"`
-	Results  []struct {
-		Name string `json:"name"`
-		URL  string `json:"url"`
-	} `json:"results"`
-}
-
 func (c *Client) GetLocations(url *string) (LocationsResponse, error) {
-	path := baseUrl + "/location-area"
+	path := baseUrl + "/location-area/"
 	if url != nil {
 		path = *url
 	}
-	fmt.Println(path)
-	res, err := c.HttpClient.Get(path)
-	if err != nil {
-		return LocationsResponse{}, err
+	var res *http.Response
+	var err error
+
+	data, ok := c.Cache.Get(path)
+	if !ok {
+		res, err = c.HttpClient.Get(path)
+		if err != nil {
+			return LocationsResponse{}, err
+		}
+		defer res.Body.Close()
+		data, err = io.ReadAll(res.Body)
+		if err != nil {
+			return LocationsResponse{}, err
+		}
+		c.Cache.Add(path, data)
 	}
 
-	data, err := io.ReadAll(res.Body)
-	if err != nil {
-		return LocationsResponse{}, err
-	}
 	var locationsResponse LocationsResponse
 
 	if err = json.Unmarshal(data, &locationsResponse); err != nil {
