@@ -45,6 +45,12 @@ func startRepl(cfg *pokeapi.Config) {
 			} else {
 				cfg.CatchingPokemon = &cleanedInputs[1]
 			}
+		case "inspect":
+			if len(cleanedInputs) < 2 {
+				fmt.Println("Requre a valid pokemon argument")
+			} else {
+				cfg.PokemonToInspect = &cleanedInputs[1]
+			}
 		}
 
 		if !exists {

@@ -15,10 +15,20 @@ type Pokedex struct {
 type Pokemon struct {
 	Name       string
 	Experience int
-	Stats      []struct {
+	Height     int
+	Weight     int
+
+	Stats []struct {
 		BaseStat int
 		Effort   int
 		Stat     struct {
+			Name string
+			URL  string
+		}
+	}
+	Types []struct {
+		Slot int
+		Type struct {
 			Name string
 			URL  string
 		}
@@ -36,6 +46,9 @@ func (p *Pokedex) createPokemon(pokedata pokeapi.CatchResponse) Pokemon {
 	return Pokemon{
 		Name:       pokedata.Name,
 		Experience: pokedata.BaseExperience,
+		Height:     pokedata.Height,
+		Weight:     pokedata.Weight,
+
 		Stats: []struct {
 			BaseStat int
 			Effort   int
@@ -44,6 +57,13 @@ func (p *Pokedex) createPokemon(pokedata pokeapi.CatchResponse) Pokemon {
 				URL  string
 			}
 		}(pokedata.Stats),
+		Types: []struct {
+			Slot int
+			Type struct {
+				Name string
+				URL  string
+			}
+		}(pokedata.Types),
 	}
 }
 
@@ -78,4 +98,23 @@ func (p *Pokedex) HasPokemon(name string) bool {
 	defer p.M.Unlock()
 	_, ok := p.Entries[name]
 	return ok
+}
+func (p *Pokedex) Inspect(name string) {
+	p.M.Lock()
+	defer p.M.Unlock()
+	pokemon, ok := p.Entries[name]
+	if !ok {
+		fmt.Println("you have not caught that pokemon")
+	}
+	fmt.Printf("Name: %v\n", pokemon.Name)
+	fmt.Printf("Height: %v\n", pokemon.Height)
+	fmt.Printf("Weight: %v\n", pokemon.Weight)
+	fmt.Printf("Stats: \n")
+	for _, stat := range pokemon.Stats {
+		fmt.Printf("-%v: %v\n", stat.Stat.Name, stat.BaseStat)
+	}
+	fmt.Printf("Types: \n")
+	for _, el := range pokemon.Types {
+		fmt.Printf("-%v\n", el.Type.Name)
+	}
 }
