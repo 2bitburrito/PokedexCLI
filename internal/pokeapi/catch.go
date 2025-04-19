@@ -3,7 +3,6 @@ package pokeapi
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"net/http"
 )
@@ -15,7 +14,7 @@ func (c *Client) CatchPokemon(pokemon *string) (CatchResponse, error) {
 	if pokemon == nil {
 		return catchRes, errors.New("no pokemon found")
 	}
-	path := fmt.Sprintf("%v%v%v", baseUrl, "/pokemon/", *pokemon)
+	path := baseUrl + "/pokemon/" + *pokemon
 
 	data, ok := c.Cache.Get(path)
 	if !ok {

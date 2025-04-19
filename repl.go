@@ -6,7 +6,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/2bitburrito/pokedex-cli/internal/commands"
+	"github.com/2bitburrito/pokedex-cli/commands"
 	"github.com/2bitburrito/pokedex-cli/internal/pokeapi"
 )
 
