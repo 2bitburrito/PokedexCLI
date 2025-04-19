@@ -63,11 +63,16 @@ func (p *Pokedex) ShowPokemonInfo(name string) (Pokemon, bool) {
 func (p *Pokedex) ListPokemon() {
 	p.M.Lock()
 	defer p.M.Unlock()
+	dexLength := len(p.Entries)
+	if dexLength < 1 {
+		fmt.Println("0 Pokemon found")
+		return
+	}
+	fmt.Printf("You have caught: %d Pokemon\n", dexLength)
 	for pokemon := range p.Entries {
 		fmt.Println(pokemon)
 	}
 }
-
 func (p *Pokedex) HasPokemon(name string) bool {
 	p.M.Lock()
 	defer p.M.Unlock()
